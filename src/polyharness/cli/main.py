@@ -21,6 +21,7 @@ from polyharness.synthesis.cascade_guard import CascadeGuard
 from polyharness.synthesis.compiler import DatasetCompiler
 from polyharness.synthesis.observation import ObservationTransformer
 from polyharness.synthesis.perturbation import SyntaxPerturber
+from polyharness.synthesis.streaming import StreamingDatasetCompiler
 
 app = typer.Typer(
     name="polyharness",
@@ -188,6 +189,58 @@ def compile(
     compiler.export_to_file(records, output_file, format_type="jsonl")
     mode_str = "Multi-Harness Mixture" if mixture else f"Single Harness ({harness})"
     console.print(f"[bold green]Exported {len(records)} records ({mode_str}) to:[/bold green] {output_file}")
+
+
+@app.command(name="compile-stream")
+def compile_stream(
+    source: Path = typer.Argument(..., help="Path to input trajectory file (.json/.jsonl) or directory"),
+    output_dir: Path = typer.Option(Path("exported_sft"), help="Directory where sharded datasets will be written"),
+    base_name: str = typer.Option("train_mixture", help="Base filename prefix for output shards"),
+    max_records: int = typer.Option(5000, help="Maximum trajectory records per shard partition"),
+    max_tokens: int | None = typer.Option(None, help="Maximum allowed sequence token length"),
+    compress: bool = typer.Option(False, "--compress", "-c", help="Compress output shards with gzip (.jsonl.gz)"),
+    skip_over_budget: bool = typer.Option(False, help="Skip trajectories exceeding max_tokens instead of keeping them"),
+):
+    """Compile trajectories with zero-copy streaming, sharding, and token budgeting."""
+    if not source.exists():
+        console.print(f"[bold red]Source path does not exist:[/bold red] {source}")
+        raise typer.Exit(code=1)
+
+    compiler = StreamingDatasetCompiler(max_seq_len=max_tokens, seed=42)
+    trajectories = compiler.stream_trajectories_from_path(source)
+
+    console.print(f"[bold cyan]Starting streaming compilation from {source}...[/bold cyan]")
+    summary = compiler.compile_to_sharded_files(
+        trajectories=trajectories,
+        output_dir=output_dir,
+        base_filename=base_name,
+        max_records_per_shard=max_records,
+        compress=compress,
+        skip_over_budget=skip_over_budget,
+    )
+
+    console.print(Panel(
+        f"Total Records Compiled: [bold]{summary.total_records}[/bold]\n"
+        f"Total Shards Generated: [bold]{summary.total_shards}[/bold]\n"
+        f"Recovery Trajectories: [bold]{summary.recovery_count} ({summary.recovery_ratio * 100:.1f}%)[/bold]\n"
+        f"Token Distribution: Min={summary.token_stats.min_tokens}, P50={summary.token_stats.p50_tokens}, "
+        f"P95={summary.token_stats.p95_tokens}, Max={summary.token_stats.max_tokens}\n"
+        f"Over-Budget Tokens (> {max_tokens or 'inf'}): [yellow]{summary.token_stats.over_budget_count}[/yellow]\n"
+        f"Manifest Written: [green]{output_dir / f'{base_name}_manifest.json'}[/green]",
+        title="Streaming Compilation Telemetry",
+        border_style="green",
+    ))
+
+    table = Table(title="Harness Distribution Breakdown")
+    table.add_column("Harness", style="bold cyan")
+    table.add_column("Count", style="white")
+    table.add_column("Percentage", style="bold green")
+
+    for h, cnt in summary.harness_counts.items():
+        pct = (cnt / summary.total_records * 100) if summary.total_records > 0 else 0.0
+        table.add_row(h, str(cnt), f"{pct:.1f}%")
+
+    console.print(table)
 
 
 @app.command()

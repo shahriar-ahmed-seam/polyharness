@@ -291,10 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const badge = document.getElementById("diag-valid-badge");
       if (report.is_valid) {
-        badge.className = "badge success";
+        badge.className = "status-badge valid";
         badge.innerText = "Valid Schema";
       } else {
-        badge.className = "badge rendered";
+        badge.className = "status-badge error";
         badge.innerText = "Schema Errors";
       }
 
@@ -317,16 +317,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const list = document.getElementById("diag-issues-list");
       list.innerHTML = "";
       if (report.issues.length === 0) {
-        list.innerHTML = "<div style='color: #10b981; font-size: 0.85rem;'>✓ No fragility issues detected. Trajectory demonstrates robust cross-harness properties.</div>";
+        list.innerHTML = "<div style='color: var(--status-emerald); font-size: 12px; font-family: var(--font-mono);'>[PASS] Zero fragility vulnerabilities detected. Trajectory exhibits robust cross-harness properties.</div>";
       } else {
         report.issues.forEach(issue => {
           const div = document.createElement("div");
           div.className = `issue-item ${issue.severity}`;
           div.innerHTML = `
-            <div class="issue-content">
-              <div class="issue-title">[${issue.category.toUpperCase()}] ${escapeHtml(issue.message)}</div>
-              <div class="issue-rec">💡 <strong>Fix:</strong> ${escapeHtml(issue.recommendation)}</div>
-            </div>
+            <div class="issue-title">[${issue.category.toUpperCase()}] ${escapeHtml(issue.message)}</div>
+            <div class="issue-rec">Fix: ${escapeHtml(issue.recommendation)}</div>
           `;
           list.appendChild(div);
         });
@@ -343,10 +341,10 @@ document.addEventListener("DOMContentLoaded", () => {
     fill.style.width = `${pct}%`;
 
     if (score >= 0.5) {
-      tag.className = "risk-tag high";
+      tag.className = "risk-badge high";
       tag.innerText = `High Risk (${pct}%)`;
     } else {
-      tag.className = "risk-tag low";
+      tag.className = "risk-badge low";
       tag.innerText = `Low Risk (${pct}%)`;
     }
   }
@@ -358,7 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const trajectory = JSON.parse(adpJsonEditor.value);
       const container = document.getElementById("variants-container");
-      container.innerHTML = "<div class='empty-state'>Synthesizing multi-representation variants...</div>";
+      container.innerHTML = "<div class='empty-placeholder'>Synthesizing multi-representation variants...</div>";
 
       const res = await fetch("/api/trajectories/augment", {
         method: "POST",
@@ -379,8 +377,8 @@ document.addEventListener("DOMContentLoaded", () => {
         card.className = "variant-card";
         const title = k.replace(/_/g, " ").toUpperCase();
         card.innerHTML = `
-          <h4>🧬 ${title}</h4>
-          <p style="font-size: 0.8rem; color: #94a3b8;">${variant.metadata.notes || "Synthetically generated variant"}</p>
+          <h4>${title}</h4>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">${variant.metadata.notes || "Synthetically generated invariant"}</p>
           <div class="variant-preview">${escapeHtml(JSON.stringify(variant, null, 2))}</div>
         `;
         container.appendChild(card);
@@ -416,17 +414,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = document.getElementById("eval-verdict-text");
 
       if (report.is_production_safe) {
-        tag.className = "verdict-tag pass";
+        tag.className = "verdict-stamp pass";
         tag.innerText = "SAFE FOR PRODUCTION (INVARIANT)";
         text.innerText = "Model successfully completed tasks across unseen tool syntaxes and observation formats without cascading errors.";
         hocDesc.innerText = "Negligible transfer penalty across unseen harnesses";
-        document.getElementById("eval-hoc-val").style.color = "#10b981";
+        document.getElementById("eval-hoc-val").style.color = "var(--status-emerald)";
       } else {
-        tag.className = "verdict-tag fail";
-        tag.innerText = "FAILED AUDIT: HARNESS OVERFITTED";
+        tag.className = "verdict-stamp fail";
+        tag.innerText = "FAILED AUDIT: OVERFITTED";
         text.innerText = "Single-harness fine-tuning caused severe trajectory overfitting. The model collapses when tool schemas or observations diverge.";
         hocDesc.innerText = "Catastrophic degradation on unseen harnesses";
-        document.getElementById("eval-hoc-val").style.color = "#f43f5e";
+        document.getElementById("eval-hoc-val").style.color = "var(--status-rose)";
       }
 
       // Populate Table
@@ -435,19 +433,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       Object.entries(report.detailed_harness_results).forEach(([hId, r]) => {
         const tr = document.createElement("tr");
-        const roleStr = r.is_native_training_harness ? "<span style='color: #06b6d4; font-weight: 600;'>Native (Trained)</span>" : "<span style='color: #a855f7; font-weight: 600;'>Unseen Eval</span>";
+        const roleStr = r.is_native_training_harness
+          ? "<span style='color: var(--text-accent); font-weight: 600; font-family: var(--font-mono); font-size: 11px;'>NATIVE</span>"
+          : "<span style='color: var(--text-muted); font-family: var(--font-mono); font-size: 11px;'>UNSEEN EVAL</span>";
         const accPct = (r.accuracy * 100).toFixed(1);
         const statusBadge = r.accuracy >= 0.8
-          ? "<span class='badge success'>PASS</span>"
-          : "<span class='badge rendered' style='background: rgba(244,63,94,0.15); color: #f43f5e;'>FAIL</span>";
+          ? "<span class='risk-badge low'>PASS</span>"
+          : "<span class='risk-badge high'>FAIL</span>";
 
         tr.innerHTML = `
-          <td><strong>${hId.toUpperCase()}</strong></td>
+          <td><strong class='monospace'>${hId.toUpperCase()}</strong></td>
           <td>${roleStr}</td>
-          <td><strong>${accPct}%</strong></td>
-          <td>${r.malformed_tool_calls}</td>
-          <td>${r.unvisited_state_crashes}</td>
-          <td>${r.cascading_failure_count}</td>
+          <td><span class='monospace'>${accPct}%</span></td>
+          <td class='monospace'>${r.malformed_tool_calls}</td>
+          <td class='monospace'>${r.unvisited_state_crashes}</td>
+          <td class='monospace'>${r.cascading_failure_count}</td>
           <td>${statusBadge}</td>
         `;
         tbody.appendChild(tr);

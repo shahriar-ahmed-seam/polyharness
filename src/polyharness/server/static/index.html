@@ -3,111 +3,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PolyHarness Studio | Agent Data Protocol & Multi-Harness Evaluation Suite</title>
-  <meta name="description" content="Production suite for preventing single-harness agent fine-tuning collapse. Trajectory Interlingua (ADP), Cross-Harness Compilation, and Overfitting Audits.">
+  <title>PolyHarness Studio | Agent Data Protocol Console</title>
+  <meta name="description" content="High-density engineering console for Agent Data Protocol (ADP) validation, multi-harness rendering, and overfitting evaluation.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="app-layout">
-    <!-- Top Navigation Header -->
-    <header class="top-nav" id="top-nav">
-      <div class="brand">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
+  <div class="console-root">
+    <!-- Top System Bar -->
+    <header class="system-bar" id="top-nav">
+      <div class="system-brand">
+        <div class="brand-glyph">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
           </svg>
         </div>
-        <div class="brand-text">
-          <h1>PolyHarness</h1>
-          <span class="subtext">Agent Data Protocol (ADP) & Multi-Harness Evals</span>
+        <div class="brand-titles">
+          <span class="brand-title">PolyHarness</span>
+          <span class="brand-env">ADP v1.0 &bull; Production Kernel</span>
         </div>
       </div>
 
-      <nav class="nav-tabs" id="nav-tabs">
-        <button class="tab-btn active" data-tab="studio" id="tab-studio-btn">
-          <span class="tab-icon">🔄</span> Interlingua Studio
+      <!-- Navigation Segment Tabs -->
+      <nav class="segment-tabs" id="nav-tabs" role="tablist">
+        <button class="segment-btn active" data-tab="studio" id="tab-studio-btn" role="tab">
+          <svg class="tab-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span>Interlingua Studio</span>
         </button>
-        <button class="tab-btn" data-tab="diagnostics" id="tab-diagnostics-btn">
-          <span class="tab-icon">🛡️</span> Whiteboard Diagnostics
+        <button class="segment-btn" data-tab="diagnostics" id="tab-diagnostics-btn" role="tab">
+          <svg class="tab-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          <span>Whiteboard Audit</span>
         </button>
-        <button class="tab-btn" data-tab="augmentation" id="tab-augmentation-btn">
-          <span class="tab-icon">🧬</span> Synthetic Augmenter
+        <button class="segment-btn" data-tab="augmentation" id="tab-augmentation-btn" role="tab">
+          <svg class="tab-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span>Synthetic Augmenter</span>
         </button>
-        <button class="tab-btn" data-tab="evals" id="tab-evals-btn">
-          <span class="tab-icon">📊</span> Multi-Harness Matrix
+        <button class="segment-btn" data-tab="evals" id="tab-evals-btn" role="tab">
+          <svg class="tab-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+          <span>Multi-Harness Matrix</span>
         </button>
-        <button class="tab-btn" data-tab="compiler" id="tab-compiler-btn">
-          <span class="tab-icon">📦</span> SFT Compiler
+        <button class="segment-btn" data-tab="compiler" id="tab-compiler-btn" role="tab">
+          <svg class="tab-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+            <rect x="1" y="3" width="22" height="5"></rect>
+            <line x1="10" y1="12" x2="14" y2="12"></line>
+          </svg>
+          <span>SFT Compiler</span>
         </button>
       </nav>
 
-      <div class="nav-actions">
-        <span class="status-indicator live">
-          <span class="dot"></span> ADP v1.0 Online
+      <!-- System Telemetry Right -->
+      <div class="system-telemetry">
+        <span class="telemetry-pill">
+          <span class="status-dot"></span>
+          <span class="pill-text">Engine 0.1.0</span>
         </span>
-        <a href="/docs" target="_blank" class="btn-api-docs" id="api-docs-link">FastAPI Docs</a>
+        <a href="/docs" target="_blank" class="nav-docs-link" id="api-docs-link">
+          <span>API Reference</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
       </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="main-content" id="main-content">
+    <!-- Main Workspace Container -->
+    <main class="console-body" id="main-content">
 
       <!-- TAB 1: Interlingua Studio -->
       <section class="tab-panel active" id="panel-studio">
-        <div class="panel-header">
-          <div>
-            <h2>Trajectory Interlingua (Neutral ADP ⇄ Target Harness)</h2>
-            <p class="section-desc">Decouples raw trajectory task logic from harness-specific token format and syntactic idiosyncrasies.</p>
+        <div class="workspace-header">
+          <div class="workspace-info">
+            <h1 class="page-title">Trajectory Interlingua</h1>
+            <p class="page-caption">Bidirectional compilation between canonical Agent Data Protocol (ADP) and target framework representations.</p>
           </div>
-          <div class="preset-controls">
-            <label for="sample-select">Load Trajectory:</label>
-            <select id="sample-select">
-              <option value="ecommerce">Web E-Commerce Search & Cart (Browser)</option>
-              <option value="sql">SQL Data Analytics Aggregator</option>
-              <option value="custom">Blank / Custom ADP Trajectory</option>
-            </select>
-            <button class="btn-primary" id="btn-validate-studio">Run Diagnostics</button>
+          <div class="workspace-actions">
+            <div class="control-group">
+              <label for="sample-select" class="field-label">Trajectory:</label>
+              <select id="sample-select" class="select-field">
+                <option value="ecommerce">Web E-Commerce Search (Browser)</option>
+                <option value="sql">SQL Data Analytics Aggregator</option>
+                <option value="custom">Blank ADP Trajectory</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary" id="btn-validate-studio">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              <span>Run Audit</span>
+            </button>
           </div>
         </div>
 
-        <div class="studio-split-view">
-          <!-- Left Column: Canonical ADP -->
-          <div class="studio-col">
-            <div class="col-header">
-              <div class="col-title">
-                <span class="badge canonical">Canonical ADP v1.0</span>
-                <span>Neutral Interlingua JSON</span>
+        <div class="dual-pane-editor">
+          <!-- Left Pane: Canonical ADP -->
+          <div class="editor-pane">
+            <div class="pane-bar">
+              <div class="pane-tag">
+                <span class="indicator-chip canonical">CANONICAL</span>
+                <span class="pane-label">adp_v1.0.json</span>
               </div>
-              <button class="btn-action-sm" id="btn-copy-adp">Copy JSON</button>
+              <div class="pane-controls">
+                <button class="btn btn-ghost" id="btn-copy-adp">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  <span>Copy JSON</span>
+                </button>
+              </div>
             </div>
-            <div class="editor-container">
-              <textarea id="adp-json-editor" spellcheck="false"></textarea>
+            <div class="pane-content code-host">
+              <textarea id="adp-json-editor" spellcheck="false" class="code-editor"></textarea>
             </div>
           </div>
 
-          <!-- Right Column: Rendered Harness -->
-          <div class="studio-col">
-            <div class="col-header">
-              <div class="col-title">
-                <span class="badge rendered">Target Harness</span>
-                <select id="harness-target-select">
-                  <option value="openai">OpenAI (ChatML & Tools)</option>
+          <!-- Right Pane: Target Harness -->
+          <div class="editor-pane">
+            <div class="pane-bar">
+              <div class="pane-tag">
+                <span class="indicator-chip rendered">TARGET</span>
+                <select id="harness-target-select" class="select-inline">
+                  <option value="openai">OpenAI ChatML & Tool Calling</option>
                   <option value="anthropic">Anthropic Claude (Tool Use Blocks)</option>
                   <option value="hermes">Nous Hermes 2/3 (XML Standard)</option>
-                  <option value="react">Classic ReAct (Thought / Action / Obs)</option>
-                  <option value="browsergym">BrowserGym (AXTree & Actions)</option>
-                  <option value="langchain">LangChain (AgentExecutor Traces)</option>
+                  <option value="smolagents">HuggingFace Smolagents</option>
+                  <option value="react">Classic ReAct (Reasoning Loop)</option>
+                  <option value="browsergym">BrowserGym (AXTree Actions)</option>
+                  <option value="langchain">LangChain AgentExecutor</option>
                 </select>
               </div>
-              <button class="btn-primary btn-sm" id="btn-render-harness">Re-render</button>
+              <div class="pane-controls">
+                <button class="btn btn-primary btn-compact" id="btn-render-harness">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                  <span>Re-render</span>
+                </button>
+              </div>
             </div>
-            <div class="editor-container">
-              <pre id="rendered-output-display"><code>Loading rendered harness output...</code></pre>
+            <div class="pane-content code-host">
+              <pre id="rendered-output-display" class="code-display"><code>Loading rendered harness output...</code></pre>
             </div>
           </div>
         </div>
@@ -115,192 +165,211 @@
 
       <!-- TAB 2: Whiteboard Diagnostics -->
       <section class="tab-panel" id="panel-diagnostics">
-        <div class="panel-header">
-          <div>
-            <h2>Whiteboard Overfitting Diagnostics</h2>
-            <p class="section-desc">Direct automated audits for the three critical failure modes identified on the production whiteboard.</p>
+        <div class="workspace-header">
+          <div class="workspace-info">
+            <h1 class="page-title">Whiteboard Overfitting Diagnostics</h1>
+            <p class="page-caption">Automated structural verification targeting the three failure modes identified in production agent training.</p>
           </div>
-          <button class="btn-primary" id="btn-retest-diagnostics">Audit Active Trajectory</button>
+          <button class="btn btn-primary" id="btn-retest-diagnostics">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            <span>Re-evaluate Active Trajectory</span>
+          </button>
         </div>
 
-        <div class="diagnostics-summary-bar">
-          <div class="diag-score-card">
-            <div class="diag-num" id="diag-quality-score">88.5</div>
-            <div class="diag-label">Trajectory Quality Index</div>
+        <!-- Telemetry Summary Row -->
+        <div class="telemetry-bar">
+          <div class="telemetry-cell kpi">
+            <div class="kpi-value" id="diag-quality-score">88.5</div>
+            <div class="kpi-label">Quality Score (TQI)</div>
           </div>
-          <div class="diag-meta-card">
-            <div class="meta-item">
-              <span class="meta-label">Task</span>
-              <span class="meta-val" id="diag-task-name">-</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Steps & Recovery</span>
-              <span class="meta-val" id="diag-steps-count">-</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Integrity Status</span>
-              <span class="badge success" id="diag-valid-badge">Valid Schema</span>
-            </div>
+          <div class="telemetry-cell">
+            <span class="cell-label">Task Identifier</span>
+            <span class="cell-val text-truncate" id="diag-task-name">-</span>
           </div>
-        </div>
-
-        <!-- 3 Failure Modes Cards Grid -->
-        <div class="failure-modes-grid">
-          <!-- Card 1: Tool Syntax & Primitives -->
-          <div class="mode-card" id="mode-syntax-card">
-            <div class="card-icon">🚧</div>
-            <div class="card-head">
-              <h3>Tool Syntax & Primitives</h3>
-              <span class="risk-tag" id="risk-syntax-tag">Low Risk</span>
-            </div>
-            <p class="card-desc">Different schemas or tools create malformed calls and missing actions during cross-framework execution.</p>
-            <div class="risk-progress-bar">
-              <div class="progress-fill" id="progress-syntax-fill" style="width: 25%;"></div>
-            </div>
-            <div class="remediation-tip" id="tip-syntax">
-              <strong>Whiteboard Fix:</strong> Declare strict ADP ToolDefinitions so compilers can synthesize parameter aliases and casing invariance.
-            </div>
+          <div class="telemetry-cell">
+            <span class="cell-label">Step Count</span>
+            <span class="cell-val monospace" id="diag-steps-count">-</span>
           </div>
-
-          <!-- Card 2: Observation Format -->
-          <div class="mode-card" id="mode-obs-card">
-            <div class="card-icon">👁️</div>
-            <div class="card-head">
-              <h3>Observation Format Monoculture</h3>
-              <span class="risk-tag" id="risk-obs-tag">High Risk</span>
-            </div>
-            <p class="card-desc">Unseen HTML or tree formats force model onto unvisited states, inducing off-distribution hallucination.</p>
-            <div class="risk-progress-bar">
-              <div class="progress-fill" id="progress-obs-fill" style="width: 85%;"></div>
-            </div>
-            <div class="remediation-tip" id="tip-obs">
-              <strong>Whiteboard Fix:</strong> Transform single-modality observations into concurrent AXTree, DOM HTML, and Markdown views.
-            </div>
-          </div>
-
-          <!-- Card 3: Teacher Forcing Cascade -->
-          <div class="mode-card" id="mode-cascade-card">
-            <div class="card-icon">⏱️</div>
-            <div class="card-head">
-              <h3>Teacher Forcing Cascade</h3>
-              <span class="risk-tag" id="risk-cascade-tag">High Risk</span>
-            </div>
-            <p class="card-desc">First unfamiliar state pushes model off-distribution; without recovery supervision, errors compound exponentially.</p>
-            <div class="risk-progress-bar">
-              <div class="progress-fill" id="progress-cascade-fill" style="width: 90%;"></div>
-            </div>
-            <div class="remediation-tip" id="tip-cascade">
-              <strong>Whiteboard Fix:</strong> Inject simulated environment errors and self-correction recovery turns with CascadeGuard.
-            </div>
+          <div class="telemetry-cell">
+            <span class="cell-label">Schema Integrity</span>
+            <span class="status-badge valid" id="diag-valid-badge">Valid Schema</span>
           </div>
         </div>
 
-        <!-- Diagnostics Issue List -->
-        <div class="issues-box" id="issues-box">
-          <h4>Detected Diagnostic Alerts</h4>
-          <div class="issues-list" id="diag-issues-list">
-            <!-- Populated via JS -->
+        <!-- The 3 Failure Modes Inspection Row -->
+        <div class="diagnostics-row">
+          <!-- Vulnerability 1 -->
+          <div class="audit-card" id="mode-syntax-card">
+            <div class="audit-header">
+              <div class="audit-title-block">
+                <span class="audit-code">FAIL-01</span>
+                <h3 class="audit-name">Tool Syntax & Primitives</h3>
+              </div>
+              <span class="risk-badge low" id="risk-syntax-tag">Low Risk</span>
+            </div>
+            <p class="audit-detail">Rigid parameter schemas cause malformed calls and missing actions under casing or naming variance.</p>
+            <div class="metric-meter">
+              <div class="meter-bar" id="progress-syntax-fill" style="width: 25%;"></div>
+            </div>
+            <div class="audit-fix" id="tip-syntax">
+              <span class="fix-label">Whiteboard Resolution:</span>
+              <span class="fix-text">Declare strict ADP ToolDefinitions and apply SyntaxPerturber for casing invariance.</span>
+            </div>
+          </div>
+
+          <!-- Vulnerability 2 -->
+          <div class="audit-card" id="mode-obs-card">
+            <div class="audit-header">
+              <div class="audit-title-block">
+                <span class="audit-code">FAIL-02</span>
+                <h3 class="audit-name">Observation Monoculture</h3>
+              </div>
+              <span class="risk-badge high" id="risk-obs-tag">High Risk</span>
+            </div>
+            <p class="audit-detail">Unseen HTML, raw text, or tree formats push model onto unvisited distribution states, triggering hallucinations.</p>
+            <div class="metric-meter">
+              <div class="meter-bar" id="progress-obs-fill" style="width: 85%;"></div>
+            </div>
+            <div class="audit-fix" id="tip-obs">
+              <span class="fix-label">Whiteboard Resolution:</span>
+              <span class="fix-text">Synthesize concurrent DOM HTML, AXTree, and Markdown representations via ObservationTransformer.</span>
+            </div>
+          </div>
+
+          <!-- Vulnerability 3 -->
+          <div class="audit-card" id="mode-cascade-card">
+            <div class="audit-header">
+              <div class="audit-title-block">
+                <span class="audit-code">FAIL-03</span>
+                <h3 class="audit-name">Teacher Forcing Cascade</h3>
+              </div>
+              <span class="risk-badge high" id="risk-cascade-tag">High Risk</span>
+            </div>
+            <p class="audit-detail">100% clean SFT trajectories fail to supervise error recovery; the first unexpected state causes fatal divergence.</p>
+            <div class="metric-meter">
+              <div class="meter-bar" id="progress-cascade-fill" style="width: 90%;"></div>
+            </div>
+            <div class="audit-fix" id="tip-cascade">
+              <span class="fix-label">Whiteboard Resolution:</span>
+              <span class="fix-text">Inject simulated environment failures and self-correction recovery turns with CascadeGuard.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Feed -->
+        <div class="issue-feed-section">
+          <div class="section-label">Diagnostic Findings & Recommendations</div>
+          <div class="issue-feed-list" id="diag-issues-list">
+            <!-- Populated via app.js -->
           </div>
         </div>
       </section>
 
       <!-- TAB 3: Synthetic Augmentation -->
       <section class="tab-panel" id="panel-augmentation">
-        <div class="panel-header">
-          <div>
-            <h2>Synthetic Anti-Overfitting Augmentation</h2>
-            <p class="section-desc">Generate robust trajectory variants that immunize models against the 3 whiteboard failure modes.</p>
+        <div class="workspace-header">
+          <div class="workspace-info">
+            <h1 class="page-title">Synthetic Anti-Overfitting Augmenter</h1>
+            <p class="page-caption">Generate robust trajectory variants that inoculate models against tool syntax drift, DOM changes, and error cascades.</p>
           </div>
-          <button class="btn-primary" id="btn-run-augment">Generate Augmented Variants</button>
+          <button class="btn btn-primary" id="btn-run-augment">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span>Generate Invariance Variants</span>
+          </button>
         </div>
 
-        <div class="augment-controls-bar">
-          <label class="checkbox-pill">
+        <div class="filter-strip">
+          <label class="toggle-control">
             <input type="checkbox" id="chk-augment-syntax" checked>
-            <span>Parameter Casing & Ordering Perturbation (Syntax Invariance)</span>
+            <span class="toggle-text">Tool Syntax & Casing Noise (camelCase ⇄ snake_case)</span>
           </label>
-          <label class="checkbox-pill">
+          <label class="toggle-control">
             <input type="checkbox" id="chk-augment-obs" checked>
-            <span>Multi-Representation DOM ⇄ AXTree ⇄ Markdown Synthesis</span>
+            <span class="toggle-text">Multi-Representation DOM (HTML ⇄ AXTree ⇄ Markdown)</span>
           </label>
-          <label class="checkbox-pill">
+          <label class="toggle-control">
             <input type="checkbox" id="chk-augment-cascade" checked>
-            <span>CascadeGuard Error & Recovery Turn Injection</span>
+            <span class="toggle-text">CascadeGuard Error & Recovery Turns</span>
           </label>
         </div>
 
-        <div class="variants-container" id="variants-container">
-          <div class="empty-state">Click "Generate Augmented Variants" to synthesize robust multi-harness trajectories.</div>
+        <div class="variants-grid" id="variants-container">
+          <div class="empty-placeholder">Click "Generate Invariance Variants" to synthesize robust multi-harness trajectories.</div>
         </div>
       </section>
 
       <!-- TAB 4: Multi-Harness Evaluation Matrix -->
       <section class="tab-panel" id="panel-evals">
-        <div class="panel-header">
-          <div>
-            <h2>Multi-Harness Evaluation & Overfitting Audit</h2>
-            <p class="section-desc">Evaluate models on unseen harnesses to calculate the Harness Overfitting Coefficient (HOC).</p>
+        <div class="workspace-header">
+          <div class="workspace-info">
+            <h1 class="page-title">Multi-Harness Evaluation Suite</h1>
+            <p class="page-caption">Benchmark agent task completion across unseen tool syntaxes and harness representations to calculate HOC.</p>
           </div>
-          <div class="preset-controls">
-            <label for="eval-profile-select">Model Under Test:</label>
-            <select id="eval-profile-select">
-              <option value="overfitted_single_harness">Naive Model (Fine-tuned on 1 Harness only)</option>
-              <option value="polyharness_generalist">PolyHarness Model (Fine-tuned on ADP Mixture)</option>
-            </select>
-            <button class="btn-primary" id="btn-run-eval">Execute Multi-Harness Audit</button>
-          </div>
-        </div>
-
-        <!-- Eval Scorecard Hero -->
-        <div class="eval-hero-card" id="eval-hero-card">
-          <div class="eval-hero-main">
-            <div class="eval-metric-large">
-              <span class="metric-title">Harness Overfitting Coefficient (HOC)</span>
-              <div class="metric-value-huge" id="eval-hoc-val">0.625</div>
-              <span class="metric-note" id="eval-hoc-desc">High Degradation on Unseen Harnesses</span>
+          <div class="workspace-actions">
+            <div class="control-group">
+              <label for="eval-profile-select" class="field-label">Target Model:</label>
+              <select id="eval-profile-select" class="select-field">
+                <option value="overfitted_single_harness">1-Harness Fine-Tuned Model (Overfitted)</option>
+                <option value="polyharness_generalist">PolyHarness Model (ADP Multi-Harness Trained)</option>
+              </select>
             </div>
-            <div class="verdict-banner" id="eval-verdict-banner">
-              <span class="verdict-tag fail" id="eval-verdict-tag">FAILED AUDIT: HARNESS OVERFITTED</span>
-              <p id="eval-verdict-text">Model memorized 1 harness token pattern and collapses when deployed on unseen tool schemas.</p>
-            </div>
-          </div>
-
-          <div class="eval-stat-pills">
-            <div class="stat-pill">
-              <span class="stat-label">Native Accuracy</span>
-              <span class="stat-val" id="eval-native-acc">100.0%</span>
-            </div>
-            <div class="stat-pill">
-              <span class="stat-label">Unseen Harnesses Avg</span>
-              <span class="stat-val" id="eval-unseen-acc">37.5%</span>
-            </div>
-            <div class="stat-pill">
-              <span class="stat-label">Cross-Harness Transfer (CHTS)</span>
-              <span class="stat-val" id="eval-chts-val">0.375</span>
-            </div>
-            <div class="stat-pill">
-              <span class="stat-label">Cascading Divergence Rate (CDR)</span>
-              <span class="stat-val" id="eval-cdr-val">0.333</span>
-            </div>
+            <button class="btn btn-primary" id="btn-run-eval">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>Execute Audit Run</span>
+            </button>
           </div>
         </div>
 
-        <!-- Harness Breakdown Table -->
-        <div class="table-container">
-          <table class="data-table" id="eval-breakdown-table">
+        <!-- Evaluation Overview Panel -->
+        <div class="eval-dashboard" id="eval-hero-card">
+          <div class="dashboard-primary">
+            <div class="primary-metric">
+              <span class="kpi-caption">Harness Overfitting Coefficient (HOC)</span>
+              <div class="kpi-jumbo" id="eval-hoc-val">0.625</div>
+              <span class="kpi-subtext" id="eval-hoc-desc">Quantifies performance degradation when evaluated on unseen harnesses</span>
+            </div>
+            <div class="verdict-card" id="eval-verdict-banner">
+              <span class="verdict-stamp fail" id="eval-verdict-tag">FAILED AUDIT: OVERFITTED</span>
+              <p class="verdict-summary" id="eval-verdict-text">Model memorized specific harness token structures and collapses when tool schemas diverge.</p>
+            </div>
+          </div>
+
+          <div class="dashboard-cells">
+            <div class="metric-cell">
+              <span class="cell-label">Native Accuracy</span>
+              <span class="cell-data monospace" id="eval-native-acc">100.0%</span>
+            </div>
+            <div class="metric-cell">
+              <span class="cell-label">Unseen Harness Avg</span>
+              <span class="cell-data monospace" id="eval-unseen-acc">37.5%</span>
+            </div>
+            <div class="metric-cell">
+              <span class="cell-label">Cross-Harness Transfer (CHTS)</span>
+              <span class="cell-data monospace" id="eval-chts-val">0.375</span>
+            </div>
+            <div class="metric-cell">
+              <span class="cell-label">Cascading Divergence Rate (CDR)</span>
+              <span class="cell-data monospace" id="eval-cdr-val">0.333</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation Table -->
+        <div class="table-frame">
+          <table class="telemetry-table" id="eval-breakdown-table">
             <thead>
               <tr>
-                <th>Harness Target</th>
-                <th>Evaluation Role</th>
-                <th>Task Completion Rate</th>
-                <th>Malformed Tool Calls</th>
-                <th>Observation Crashes</th>
+                <th>Harness ID</th>
+                <th>Role</th>
+                <th>Accuracy</th>
+                <th>Malformed Calls</th>
+                <th>State Crashes</th>
                 <th>Cascading Failures</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody id="eval-table-body">
-              <!-- Populated via JS -->
+              <!-- Populated via app.js -->
             </tbody>
           </table>
         </div>
@@ -308,49 +377,53 @@
 
       <!-- TAB 5: SFT Dataset Compiler -->
       <section class="tab-panel" id="panel-compiler">
-        <div class="panel-header">
-          <div>
-            <h2>SFT Dataset Compiler</h2>
-            <p class="section-desc">Compile canonical ADP trajectories into fine-tuning datasets for Hugging Face TRL, Axolotl, Unsloth, and OpenAI.</p>
+        <div class="workspace-header">
+          <div class="workspace-info">
+            <h1 class="page-title">SFT Dataset Compiler</h1>
+            <p class="page-caption">Compile canonical ADP trajectories into training-ready fine-tuning datasets for HuggingFace TRL, Axolotl, Unsloth, and OpenAI.</p>
           </div>
-          <button class="btn-primary" id="btn-compile-dataset">Compile & Export</button>
+          <button class="btn btn-primary" id="btn-compile-dataset">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path><polyline points="16 16 12 12 8 16"></polyline></svg>
+            <span>Compile Dataset</span>
+          </button>
         </div>
 
-        <div class="compiler-settings-grid">
-          <div class="config-card">
-            <h3>Compilation Strategy</h3>
-            <div class="radio-group">
-              <label class="radio-option">
+        <div class="config-grid">
+          <div class="config-panel">
+            <div class="panel-heading">Compilation Distribution</div>
+            <div class="radio-stack">
+              <label class="radio-block">
                 <input type="radio" name="compile-mode" value="mixture" checked id="radio-mode-mixture">
-                <div>
-                  <strong>Multi-Harness Mixture (Recommended)</strong>
-                  <p>Inoculates against harness overfitting by distributing trajectories across OpenAI, Hermes, Claude, and ReAct formats.</p>
+                <div class="radio-details">
+                  <span class="radio-title">Multi-Harness Mixture (Recommended)</span>
+                  <span class="radio-desc">Distributes training examples across OpenAI, Hermes, Anthropic, Smolagents, and ReAct to prevent syntactic overfitting.</span>
                 </div>
               </label>
-              <label class="radio-option">
+              <label class="radio-block">
                 <input type="radio" name="compile-mode" value="single" id="radio-mode-single">
-                <div>
-                  <strong>Single Target Harness</strong>
-                  <p>Compile all trajectories into one specific framework schema.</p>
+                <div class="radio-details">
+                  <span class="radio-title">Single Target Harness</span>
+                  <span class="radio-desc">Compile all trajectories into one specific framework representation.</span>
                 </div>
               </label>
             </div>
           </div>
 
-          <div class="config-card">
-            <h3>Format & Target</h3>
-            <div class="form-group">
-              <label for="export-target-harness">Target Harness (if Single mode):</label>
-              <select id="export-target-harness">
+          <div class="config-panel">
+            <div class="panel-heading">Target & Output Format</div>
+            <div class="form-row">
+              <label for="export-target-harness" class="field-label">Target Harness (if Single):</label>
+              <select id="export-target-harness" class="select-field">
                 <option value="openai">OpenAI (ChatML / GPT-4o)</option>
-                <option value="hermes">Nous-Hermes 2/3 (Llama/Mistral/Qwen SFT)</option>
+                <option value="hermes">Nous-Hermes 2/3 (Llama/Mistral/Qwen)</option>
                 <option value="anthropic">Anthropic Claude Tool Use</option>
+                <option value="smolagents">HuggingFace Smolagents</option>
                 <option value="react">Classic ReAct</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="export-format">Export Format:</label>
-              <select id="export-format">
+            <div class="form-row">
+              <label for="export-format" class="field-label">Export Format:</label>
+              <select id="export-format" class="select-field">
                 <option value="jsonl">JSON Lines (.jsonl) for TRL / Axolotl / OpenAI</option>
                 <option value="json">Standard JSON (.json)</option>
               </select>
@@ -358,26 +431,31 @@
           </div>
         </div>
 
-        <div class="compiler-preview-container">
-          <div class="col-header">
-            <span>Compiled Training Records Preview</span>
-            <button class="btn-action-sm" id="btn-download-sft">Download Dataset</button>
+        <div class="preview-frame">
+          <div class="pane-bar">
+            <span class="pane-label">Dataset Output Preview</span>
+            <button class="btn btn-ghost" id="btn-download-sft">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download Dataset</span>
+            </button>
           </div>
-          <pre id="compiler-preview-code"><code>Click "Compile & Export" to preview generated training records.</code></pre>
+          <pre id="compiler-preview-code" class="code-display"><code>Click "Compile Dataset" to generate training records.</code></pre>
         </div>
       </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bottom-footer">
-      <div>
-        <span>PolyHarness v0.1.0</span> &bull; 
-        <span>Licensed under Apache 2.0</span> &bull; 
-        <span>Built for Production Agentic Fine-Tuning</span>
+    <!-- Footer Bar -->
+    <footer class="console-footer">
+      <div class="footer-left">
+        <span>PolyHarness v0.1.0</span>
+        <span class="sep">&bull;</span>
+        <span>Apache 2.0</span>
+        <span class="sep">&bull;</span>
+        <span class="monospace">Agent Data Protocol (ADP) Specification</span>
       </div>
-      <div>
-        <span>Created by <strong>Shahriar Ahmed Seam</strong></span>
+      <div class="footer-right">
+        <span>Lead: <strong>Shahriar Ahmed Seam</strong></span>
       </div>
     </footer>
   </div>

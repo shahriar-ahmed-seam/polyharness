@@ -41,12 +41,13 @@ def test_observation_transformer(sample_trajectory):
     assert "button" in axtree
     assert "heading" in axtree
 
-    # Test multi-representation enrichment
-    enriched = transformer.populate_multi_representations(sample_trajectory)
-    step0_obs = enriched.steps[0].observation
-    assert step0_obs.html_content is not None
-    assert step0_obs.markdown is not None
-    assert step0_obs.accessibility_tree is not None
+    # Test DOM compaction
+    noisy_html = "<div class='container' style='color: red'><script>console.log('noise');</script><svg><path d='M0'/></svg><button id='btn-buy' onclick='alert()'>Buy</button></div>"
+    compacted = transformer.compact_dom(noisy_html)
+    assert "<script>" not in compacted
+    assert "<svg>" not in compacted
+    assert "btn-buy" in compacted
+    assert "style=" not in compacted
 
 
 def test_cascade_guard(sample_trajectory):

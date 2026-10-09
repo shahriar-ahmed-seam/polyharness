@@ -1,4 +1,4 @@
-# PolyHarness 🛡️
+# PolyHarness
 
 **The Open-Standard Trajectory Interlingua (ADP) & Multi-Harness Evaluation Suite for Agentic Fine-Tuning**
 
@@ -6,11 +6,11 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-indigo.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Specification: ADP v1.0](https://img.shields.io/badge/Spec-Agent%20Data%20Protocol%20v1.0-emerald.svg)](#agent-data-protocol-adp-v10)
-[![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ed.svg)](#-docker-quickstart)
+[![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ed.svg)](#docker-quickstart)
 
 ---
 
-## 🎯 The Motivation: Why 1-Harness Fine-Tuning Collapses in Production
+## Motivation: Why 1-Harness Fine-Tuning Collapses in Production
 
 When enterprise teams train autonomous agents using Supervised Fine-Tuning (SFT) on trajectory recordings, they typically collect data inside **one specific framework** (e.g. OpenAI function calling, LangChain ReAct, or BrowserGym). 
 
@@ -18,7 +18,7 @@ When deployed to production, these models suffer catastrophic failure. Teams oft
 
 ```
     ┌────────────────────────────────────────┐
-    │  Tweak the prompt & add more examples  │ ❌ Treats data problem as prompt problem
+    │  Tweak the prompt & add more examples  │ [Antipattern: treats data problem as prompt problem]
     └────────────────────────────────────────┘
                        ▲
    ┌───────────────────┴────────────────────┐
@@ -29,7 +29,7 @@ When deployed to production, these models suffer catastrophic failure. Teams oft
    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
    │ Tool Syntax  │ │ Observation  │ │Teacher       │
    │ & Primitives │ │ Format       │ │Forcing       │
-   │ 🚧           │ │ 👁️           │ │Cascade ⏱️    │
+   │ [Syntax]     │ │ [Modality]   │ │Cascade       │
    └───────┬──────┘ └──────┬───────┘ └──────┬───────┘
            │               │                │
            └───────────────┼────────────────┘
@@ -49,13 +49,14 @@ When deployed to production, these models suffer catastrophic failure. Teams oft
 ### The 3 Whiteboard Failure Modes Solved by PolyHarness:
 | Failure Mode | Production Manifestation | PolyHarness Solution |
 | :--- | :--- | :--- |
-| **1. Tool Syntax & Primitives 🚧** | Different schemas or tool names cause malformed JSON calls and missed actions. | **`SyntaxPerturber`**: Generates parameter casing invariance (camelCase vs snake_case) and schema perturbations. |
-| **2. Observation Format 👁️** | Unseen HTML, raw text, or tree formats force the model onto unvisited states. | **`ObservationTransformer`**: Synthesizes concurrent views (DOM HTML, AXTree, Markdown, JSON state). |
-| **3. Teacher Forcing Cascade ⏱️** | First unfamiliar state pushes model off-distribution; errors compound turn-by-turn. | **`CascadeGuard`**: Injects simulated failures and self-correction recovery turns directly into SFT datasets. |
+| **1. Tool Syntax & Primitives** | Different schemas or tool names cause malformed JSON calls and missed actions. | **`SyntaxPerturber`**: Generates parameter casing invariance (camelCase vs snake_case) and schema perturbations. |
+| **2. Observation Format** | Unseen HTML, raw text, or tree formats force the model onto unvisited states. | **`ObservationTransformer`**: Synthesizes concurrent views (DOM HTML, AXTree, Markdown, JSON state). |
+| **3. Teacher Forcing Cascade** | First unfamiliar state pushes model off-distribution; errors compound turn-by-turn. | **`CascadeGuard`**: Injects simulated failures and self-correction recovery turns directly into SFT datasets. |
 
 ---
 
-## 🏛️ Architecture Overview
+## Architecture Overview
+
 
 ```mermaid
 flowchart TD
@@ -94,7 +95,7 @@ flowchart TD
 
 ---
 
-## ⚡ Key Features
+## Key Features
 
 - **Agent Data Protocol (ADP v1.0)**: Strict, open-standard Pydantic V2 specification decoupling task goals, environment specifications, tool schemas, and observations from framework quirks.
 - **7 Production Harness Adapters**:
@@ -122,7 +123,8 @@ flowchart TD
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
+
 
 ### 1. Installation
 
@@ -228,7 +230,7 @@ compiler.export_to_file(mixture_records, "exported_sft/train.jsonl")
 
 ---
 
-## 📊 Multi-Harness Overfitting Benchmark Results
+## Benchmark Results
 
 When evaluated on the standardized benchmark suite:
 
@@ -244,14 +246,14 @@ When evaluated on the standardized benchmark suite:
 │ Score (CHTS)            │                         │                          │
 │ Cascading Divergence    │ 0.250                   │ 0.000                    │
 │ Rate (CDR)              │                         │                          │
-│ Production Ready        │ ❌ COLLAPSED IN PROD    │ ✅ SAFE FOR PRODUCTION   │
+│ Production Status       │ FAILED IN PRODUCTION    │ CERTIFIED FOR PRODUCTION │
 │ Verdict                 │                         │                          │
 └─────────────────────────┴─────────────────────────┴──────────────────────────┘
 ```
 
 ---
 
-## 🐳 Docker Quickstart
+## Docker Quickstart
 
 Launch the entire PolyHarness Studio service in an isolated container:
 
@@ -263,7 +265,8 @@ Visit the Web Studio at [http://localhost:8000](http://localhost:8000) or check 
 
 ---
 
-## 🧪 Testing
+## Testing
+
 
 Run the test suite with coverage:
 
@@ -279,29 +282,27 @@ ruff check src tests examples
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 Harness/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml               # Multi-Python CI test runner
-│       ├── benchmark.yml        # Continuous HOC auditing
-│       └── release.yml          # Package build & release automation
 ├── src/
 │   └── polyharness/
 │       ├── schema/              # Neutral Interlingua (Agent Data Protocol - ADP v1.0)
 │       │   ├── adp.py           # Core Pydantic V2 models
 │       │   ├── validator.py     # Trajectory validator & whiteboard diagnostics
+│       │   ├── parsing.py       # Resilient JSON & ID reconciliation utilities
 │       │   └── serialization.py # JSON/JSONL serialization utilities
-│       ├── adapters/            # 6 Bidirectional Harness Adapters
+│       ├── adapters/            # 7 Bidirectional Harness Adapters
 │       │   ├── base.py          # Abstract Base Adapter
 │       │   ├── openai.py        # OpenAI ChatML adapter
 │       │   ├── anthropic.py     # Claude Tool Use adapter
 │       │   ├── hermes.py        # Nous Hermes XML adapter
 │       │   ├── react.py         # Classic ReAct adapter
 │       │   ├── browsergym.py    # BrowserGym web agent adapter
-│       │   └── langchain.py     # LangChain trace adapter
+│       │   ├── langchain.py     # LangChain trace adapter
+│       │   └── smolagents.py    # HuggingFace Smolagents adapter
+
 │       ├── synthesis/           # Anti-Overfitting Engines
 │       │   ├── perturbation.py  # Tool syntax & schema noise injection
 │       │   ├── observation.py   # DOM ⇄ AXTree ⇄ Markdown ⇄ JSON transforms
@@ -338,7 +339,7 @@ Harness/
 
 ---
 
-## 📚 Technical Documentation
+## Technical Documentation
 
 - **[System Architecture Blueprint](docs/ARCHITECTURE.md)**: Deep dive into the canonical interlingua pipeline, AST DOM compaction, and streaming compilation mechanics.
 - **[Agent Data Protocol (ADP v1.0) Specification](docs/SPECIFICATION.md)**: Formal RFC specification defining schemas, invariants, step indexing, and multimodal observation formats.
@@ -346,8 +347,7 @@ Harness/
 
 ---
 
-## 📜 Citation
-
+## Citation
 
 If you use **PolyHarness** in your research or production agent pipelines, please cite:
 
@@ -362,6 +362,7 @@ If you use **PolyHarness** in your research or production agent pipelines, pleas
 
 ---
 
-## 📄 License
+## License
 
 PolyHarness is licensed under the [Apache License 2.0](LICENSE).
+

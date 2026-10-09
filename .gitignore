@@ -65,3 +65,8 @@ Thumbs.db
 eval_reports/
 augmented_data/
 exported_sft/
+
+# Agent configuration & meta folders
+.agents/
+.github/
+

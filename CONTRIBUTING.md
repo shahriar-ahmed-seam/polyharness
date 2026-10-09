@@ -4,7 +4,7 @@ Thank you for your interest in contributing to **PolyHarness**! We welcome contr
 
 ---
 
-## 🛠️ Development Setup
+## Development Setup
 
 1. **Fork and clone the repository:**
    ```bash
@@ -32,7 +32,7 @@ Thank you for your interest in contributing to **PolyHarness**! We welcome contr
 
 ---
 
-## 🏗️ Adding a New Harness Adapter
+## Adding a New Harness Adapter
 
 To implement a new harness adapter (e.g. for a custom framework or agent run format):
 1. Create `src/polyharness/adapters/your_harness.py`.
@@ -43,7 +43,7 @@ To implement a new harness adapter (e.g. for a custom framework or agent run for
 
 ---
 
-## 🧪 Testing Guidelines
+## Testing Guidelines
 
 - Write thorough tests for any new features or bug fixes.
 - Ensure all tests pass with `pytest -v`.
@@ -51,7 +51,8 @@ To implement a new harness adapter (e.g. for a custom framework or agent run for
 
 ---
 
-## 📄 Pull Request Process
+## Pull Request Process
+
 
 1. Open an issue describing the proposed change or bug.
 2. Submit a feature branch PR with descriptive commits.

@@ -103,6 +103,25 @@ class ObservationTransformer:
         traverse(soup)
         return "\n".join(tree_lines) if tree_lines else "RootWebArea [id=0]"
 
+    @staticmethod
+    def compact_dom(html_content: str) -> str:
+        """Prune non-interactive structural clutter while preserving interactive targets and semantic landmarks."""
+        soup = BeautifulSoup(html_content, "html.parser")
+        for tag in soup(["script", "style", "noscript", "svg", "meta", "link", "iframe"]):
+            tag.decompose()
+
+        # Clean attributes: only retain actionable attributes
+        allowed_attrs = {"id", "name", "href", "type", "aria-label", "role", "value", "placeholder"}
+        for tag in soup.find_all(True):
+            tag.attrs = {k: v for k, v in tag.attrs.items() if k in allowed_attrs}
+
+        # Remove empty divs or spans without attributes or text
+        for elem in soup.find_all(["div", "span"]):
+            if not elem.attrs and not elem.get_text(strip=True):
+                elem.decompose()
+
+        return str(soup)
+
     def populate_multi_representations(self, trajectory: Trajectory) -> Trajectory:
         """Enrich all observations in a trajectory with both AXTree, Markdown, and HTML."""
         enriched = copy.deepcopy(trajectory)

@@ -53,6 +53,14 @@ class OverfittingAuditReport(BaseModel):
         ...,
         description="CDR: Likelihood that an unexpected observation leads to an unrecoverable crash cascade.",
     )
+    hoc_confidence_interval: tuple[float, float] = Field(
+        default=(0.0, 0.0),
+        description="95% confidence interval for Harness Overfitting Coefficient",
+    )
+    chts_confidence_interval: tuple[float, float] = Field(
+        default=(0.0, 0.0),
+        description="95% confidence interval for Cross-Harness Transfer Score",
+    )
     is_production_safe: bool = Field(
         ..., description="True if HOC < 0.25 and CDR < 0.20."
     )
@@ -97,6 +105,18 @@ def compute_overfitting_metrics(
     # Production safety threshold: HOC <= 0.25 and CDR <= 0.20
     is_safe = (hoc <= 0.25) and (cdr <= 0.20) and (native_acc >= 0.70)
 
+    # Calculate empirical variance and 95% confidence intervals
+    if len(unseen_results) > 1:
+        variance = sum((r.accuracy - unseen_acc) ** 2 for r in unseen_results) / (len(unseen_results) - 1)
+        se = (variance / len(unseen_results)) ** 0.5
+        margin = 1.96 * se
+        chts_ci = (round(max(0.0, unseen_acc - margin), 3), round(min(1.0, unseen_acc + margin), 3))
+        hoc_margin = (margin / native_acc) if native_acc > 0 else 0.0
+        hoc_ci = (round(max(0.0, hoc - hoc_margin), 3), round(min(1.0, hoc + hoc_margin), 3))
+    else:
+        chts_ci = (round(unseen_acc, 3), round(unseen_acc, 3))
+        hoc_ci = (round(hoc, 3), round(hoc, 3))
+
     detailed = {r.harness_id: r for r in results}
 
     return OverfittingAuditReport(
@@ -110,6 +130,8 @@ def compute_overfitting_metrics(
         cross_harness_transfer_score=round(unseen_acc, 3),
         tool_syntax_robustness=round(tsr, 3),
         cascading_divergence_rate=round(cdr, 3),
+        hoc_confidence_interval=hoc_ci,
+        chts_confidence_interval=chts_ci,
         is_production_safe=is_safe,
         detailed_harness_results=detailed,
     )

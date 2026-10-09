@@ -50,6 +50,9 @@ def test_compute_overfitting_metrics():
     assert report.unseen_harnesses_average_accuracy == 0.2
     assert report.harness_overfitting_coefficient == 0.8  # (1.0 - 0.2) / 1.0
     assert report.is_production_safe is False
+    assert isinstance(report.hoc_confidence_interval, tuple)
+    assert isinstance(report.chts_confidence_interval, tuple)
+    assert report.hoc_confidence_interval[0] <= report.harness_overfitting_coefficient <= report.hoc_confidence_interval[1]
 
 
 @pytest.mark.asyncio

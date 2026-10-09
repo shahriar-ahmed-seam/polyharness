@@ -1,0 +1,89 @@
+{
+  "version": "adp-1.0",
+  "id": "traj_ecommerce_01",
+  "task": "Find a wireless noise-cancelling headphone under $200 and add the highest rated item to cart.",
+  "system_prompt": "You are an autonomous shopping assistant. Use available tools to fulfill user requirements.",
+  "environment": {
+    "name": "ecommerce_sandbox",
+    "version": "1.0.0",
+    "observation_space": "html/axtree/markdown",
+    "action_space": "function_call",
+    "harness_id": "browser_agent"
+  },
+  "tools": [
+    {
+      "name": "search_products",
+      "description": "Query the product catalog with keywords and price limits",
+      "parameters": {
+        "query": { "name": "query", "type": "string", "description": "Search query text", "required": true },
+        "max_price": { "name": "max_price", "type": "number", "description": "Maximum price filter in USD", "required": false }
+      }
+    },
+    {
+      "name": "add_to_cart",
+      "description": "Add a specific product to shopping cart",
+      "parameters": {
+        "product_id": { "name": "product_id", "type": "string", "description": "Canonical product ID", "required": true },
+        "quantity": { "name": "quantity", "type": "integer", "description": "Number of units", "required": false, "default": 1 }
+      }
+    }
+  ],
+  "steps": [
+    {
+      "step_index": 0,
+      "thought": "I need to search for wireless noise-cancelling headphones under $200.",
+      "action_intent": "Search products in catalog",
+      "tool_calls": [
+        {
+          "id": "call_search_101",
+          "name": "search_products",
+          "arguments": { "query": "wireless noise-cancelling headphones", "max_price": 200 }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool_call_id": "call_search_101",
+          "name": "search_products",
+          "content": "[{\"id\": \"PROD-882\", \"name\": \"AcousticPro ANC\", \"price\": 179.99, \"rating\": 4.8}]"
+        }
+      ],
+      "observation": {
+        "primary_type": "html",
+        "raw_content": "<div class='product-list'><div class='card' id='PROD-882'><h3>AcousticPro ANC</h3><span class='price'>$179.99</span><span class='rating'>4.8 stars</span><button id='btn-add-882'>Add to Cart</button></div></div>",
+        "html_content": "<div class='product-list'><div class='card' id='PROD-882'><h3>AcousticPro ANC</h3><span class='price'>$179.99</span><span class='rating'>4.8 stars</span><button id='btn-add-882'>Add to Cart</button></div></div>",
+        "markdown": "# Search Results\n- **AcousticPro ANC** ($179.99, Rating: 4.8) [Button: Add to Cart]",
+        "accessibility_tree": "RootWebArea\n  heading 'Search Results'\n  StaticText 'AcousticPro ANC - $179.99 (4.8 stars)'\n  button 'Add to Cart' [id=btn-add-882]"
+      }
+    },
+    {
+      "step_index": 1,
+      "thought": "AcousticPro ANC (PROD-882) is highest rated at 4.8. Adding to cart now.",
+      "action_intent": "Add top rated item to cart",
+      "tool_calls": [
+        {
+          "id": "call_cart_102",
+          "name": "add_to_cart",
+          "arguments": { "product_id": "PROD-882", "quantity": 1 }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool_call_id": "call_cart_102",
+          "name": "add_to_cart",
+          "content": "{\"status\": \"success\", \"cart_item_count\": 1, \"total\": 179.99}"
+        }
+      ],
+      "is_recovery_turn": false
+    }
+  ],
+  "outcome": {
+    "success": true,
+    "final_answer": "Successfully added AcousticPro ANC ($179.99, 4.8 stars) to cart."
+  },
+  "metadata": {
+    "source_framework": "polyharness",
+    "recorder_version": "0.1.0",
+    "success": true,
+    "tags": ["ecommerce", "web"]
+  }
+}

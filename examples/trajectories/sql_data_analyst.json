@@ -1,0 +1,81 @@
+{
+  "version": "adp-1.0",
+  "id": "traj_sql_02",
+  "task": "Calculate monthly gross revenue for Q3 2024 from transactions table.",
+  "system_prompt": "You are a senior data engineer assistant. Verify schemas before running aggregations.",
+  "environment": {
+    "name": "analytics_postgres",
+    "version": "1.0.0",
+    "observation_space": "json_records",
+    "action_space": "sql_queries",
+    "harness_id": "sql_runner"
+  },
+  "tools": [
+    {
+      "name": "describe_table",
+      "description": "Inspect schema columns and types for a table",
+      "parameters": {
+        "table_name": { "name": "table_name", "type": "string", "description": "Target table", "required": true }
+      }
+    },
+    {
+      "name": "execute_sql",
+      "description": "Run analytical SQL query on PostgreSQL database",
+      "parameters": {
+        "query": { "name": "query", "type": "string", "description": "SQL query statement", "required": true }
+      }
+    }
+  ],
+  "steps": [
+    {
+      "step_index": 0,
+      "thought": "First inspect table schema to verify date and amount column names.",
+      "action_intent": "Inspect schema",
+      "tool_calls": [
+        {
+          "id": "call_desc_201",
+          "name": "describe_table",
+          "arguments": { "table_name": "transactions" }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool_call_id": "call_desc_201",
+          "name": "describe_table",
+          "content": "{\"columns\": [\"id\", \"created_at\", \"amount_cents\", \"status\"]}"
+        }
+      ]
+    },
+    {
+      "step_index": 1,
+      "thought": "Amounts are in amount_cents. Execute aggregation query grouped by month.",
+      "action_intent": "Run monthly revenue aggregation",
+      "tool_calls": [
+        {
+          "id": "call_sql_202",
+          "name": "execute_sql",
+          "arguments": {
+            "query": "SELECT to_char(created_at, 'YYYY-MM') as month, SUM(amount_cents)/100.0 as revenue FROM transactions WHERE created_at >= '2024-07-01' AND created_at < '2024-10-01' AND status = 'settled' GROUP BY 1 ORDER BY 1;"
+          }
+        }
+      ],
+      "tool_results": [
+        {
+          "tool_call_id": "call_sql_202",
+          "name": "execute_sql",
+          "content": "[{\"month\": \"2024-07\", \"revenue\": 142500.0}, {\"month\": \"2024-08\", \"revenue\": 158200.0}, {\"month\": \"2024-09\", \"revenue\": 169800.0}]"
+        }
+      ]
+    }
+  ],
+  "outcome": {
+    "success": true,
+    "final_answer": "Q3 2024 Revenue: Jul $142.5k, Aug $158.2k, Sep $169.8k. Total: $470.5k."
+  },
+  "metadata": {
+    "source_framework": "polyharness",
+    "recorder_version": "0.1.0",
+    "success": true,
+    "tags": ["sql", "analytics"]
+  }
+}

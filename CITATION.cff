@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use PolyHarness in your research or production agent pipelines, please cite it as below."
+authors:
+  - family-names: "Seam"
+    given-names: "Shahriar Ahmed"
+title: "PolyHarness: The Open-Standard Trajectory Interlingua (ADP) & Multi-Harness Evaluation Suite for Agentic Fine-Tuning"
+version: 0.1.0
+date-released: 2026-10-09
+url: "https://github.com/shahriar-ahmed-seam/polyharness"
+keywords:
+  - "ai-agents"
+  - "supervised-fine-tuning"
+  - "agent-data-protocol"
+  - "multi-harness"
+  - "teacher-forcing"
+  - "evaluation"

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PolyHarness Studio | Agent Data Protocol & Multi-Harness Evaluation Suite</title>
+  <meta name="description" content="Production suite for preventing single-harness agent fine-tuning collapse. Trajectory Interlingua (ADP), Cross-Harness Compilation, and Overfitting Audits.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Header -->
+    <header class="top-nav" id="top-nav">
+      <div class="brand">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>PolyHarness</h1>
+          <span class="subtext">Agent Data Protocol (ADP) & Multi-Harness Evals</span>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" id="nav-tabs">
+        <button class="tab-btn active" data-tab="studio" id="tab-studio-btn">
+          <span class="tab-icon">🔄</span> Interlingua Studio
+        </button>
+        <button class="tab-btn" data-tab="diagnostics" id="tab-diagnostics-btn">
+          <span class="tab-icon">🛡️</span> Whiteboard Diagnostics
+        </button>
+        <button class="tab-btn" data-tab="augmentation" id="tab-augmentation-btn">
+          <span class="tab-icon">🧬</span> Synthetic Augmenter
+        </button>
+        <button class="tab-btn" data-tab="evals" id="tab-evals-btn">
+          <span class="tab-icon">📊</span> Multi-Harness Matrix
+        </button>
+        <button class="tab-btn" data-tab="compiler" id="tab-compiler-btn">
+          <span class="tab-icon">📦</span> SFT Compiler
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="status-indicator live">
+          <span class="dot"></span> ADP v1.0 Online
+        </span>
+        <a href="/docs" target="_blank" class="btn-api-docs" id="api-docs-link">FastAPI Docs</a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content">
+
+      <!-- TAB 1: Interlingua Studio -->
+      <section class="tab-panel active" id="panel-studio">
+        <div class="panel-header">
+          <div>
+            <h2>Trajectory Interlingua (Neutral ADP ⇄ Target Harness)</h2>
+            <p class="section-desc">Decouples raw trajectory task logic from harness-specific token format and syntactic idiosyncrasies.</p>
+          </div>
+          <div class="preset-controls">
+            <label for="sample-select">Load Trajectory:</label>
+            <select id="sample-select">
+              <option value="ecommerce">Web E-Commerce Search & Cart (Browser)</option>
+              <option value="sql">SQL Data Analytics Aggregator</option>
+              <option value="custom">Blank / Custom ADP Trajectory</option>
+            </select>
+            <button class="btn-primary" id="btn-validate-studio">Run Diagnostics</button>
+          </div>
+        </div>
+
+        <div class="studio-split-view">
+          <!-- Left Column: Canonical ADP -->
+          <div class="studio-col">
+            <div class="col-header">
+              <div class="col-title">
+                <span class="badge canonical">Canonical ADP v1.0</span>
+                <span>Neutral Interlingua JSON</span>
+              </div>
+              <button class="btn-action-sm" id="btn-copy-adp">Copy JSON</button>
+            </div>
+            <div class="editor-container">
+              <textarea id="adp-json-editor" spellcheck="false"></textarea>
+            </div>
+          </div>
+
+          <!-- Right Column: Rendered Harness -->
+          <div class="studio-col">
+            <div class="col-header">
+              <div class="col-title">
+                <span class="badge rendered">Target Harness</span>
+                <select id="harness-target-select">
+                  <option value="openai">OpenAI (ChatML & Tools)</option>
+                  <option value="anthropic">Anthropic Claude (Tool Use Blocks)</option>
+                  <option value="hermes">Nous Hermes 2/3 (XML Standard)</option>
+                  <option value="react">Classic ReAct (Thought / Action / Obs)</option>
+                  <option value="browsergym">BrowserGym (AXTree & Actions)</option>
+                  <option value="langchain">LangChain (AgentExecutor Traces)</option>
+                </select>
+              </div>
+              <button class="btn-primary btn-sm" id="btn-render-harness">Re-render</button>
+            </div>
+            <div class="editor-container">
+              <pre id="rendered-output-display"><code>Loading rendered harness output...</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: Whiteboard Diagnostics -->
+      <section class="tab-panel" id="panel-diagnostics">
+        <div class="panel-header">
+          <div>
+            <h2>Whiteboard Overfitting Diagnostics</h2>
+            <p class="section-desc">Direct automated audits for the three critical failure modes identified on the production whiteboard.</p>
+          </div>
+          <button class="btn-primary" id="btn-retest-diagnostics">Audit Active Trajectory</button>
+        </div>
+
+        <div class="diagnostics-summary-bar">
+          <div class="diag-score-card">
+            <div class="diag-num" id="diag-quality-score">88.5</div>
+            <div class="diag-label">Trajectory Quality Index</div>
+          </div>
+          <div class="diag-meta-card">
+            <div class="meta-item">
+              <span class="meta-label">Task</span>
+              <span class="meta-val" id="diag-task-name">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Steps & Recovery</span>
+              <span class="meta-val" id="diag-steps-count">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Integrity Status</span>
+              <span class="badge success" id="diag-valid-badge">Valid Schema</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Failure Modes Cards Grid -->
+        <div class="failure-modes-grid">
+          <!-- Card 1: Tool Syntax & Primitives -->
+          <div class="mode-card" id="mode-syntax-card">
+            <div class="card-icon">🚧</div>
+            <div class="card-head">
+              <h3>Tool Syntax & Primitives</h3>
+              <span class="risk-tag" id="risk-syntax-tag">Low Risk</span>
+            </div>
+            <p class="card-desc">Different schemas or tools create malformed calls and missing actions during cross-framework execution.</p>
+            <div class="risk-progress-bar">
+              <div class="progress-fill" id="progress-syntax-fill" style="width: 25%;"></div>
+            </div>
+            <div class="remediation-tip" id="tip-syntax">
+              <strong>Whiteboard Fix:</strong> Declare strict ADP ToolDefinitions so compilers can synthesize parameter aliases and casing invariance.
+            </div>
+          </div>
+
+          <!-- Card 2: Observation Format -->
+          <div class="mode-card" id="mode-obs-card">
+            <div class="card-icon">👁️</div>
+            <div class="card-head">
+              <h3>Observation Format Monoculture</h3>
+              <span class="risk-tag" id="risk-obs-tag">High Risk</span>
+            </div>
+            <p class="card-desc">Unseen HTML or tree formats force model onto unvisited states, inducing off-distribution hallucination.</p>
+            <div class="risk-progress-bar">
+              <div class="progress-fill" id="progress-obs-fill" style="width: 85%;"></div>
+            </div>
+            <div class="remediation-tip" id="tip-obs">
+              <strong>Whiteboard Fix:</strong> Transform single-modality observations into concurrent AXTree, DOM HTML, and Markdown views.
+            </div>
+          </div>
+
+          <!-- Card 3: Teacher Forcing Cascade -->
+          <div class="mode-card" id="mode-cascade-card">
+            <div class="card-icon">⏱️</div>
+            <div class="card-head">
+              <h3>Teacher Forcing Cascade</h3>
+              <span class="risk-tag" id="risk-cascade-tag">High Risk</span>
+            </div>
+            <p class="card-desc">First unfamiliar state pushes model off-distribution; without recovery supervision, errors compound exponentially.</p>
+            <div class="risk-progress-bar">
+              <div class="progress-fill" id="progress-cascade-fill" style="width: 90%;"></div>
+            </div>
+            <div class="remediation-tip" id="tip-cascade">
+              <strong>Whiteboard Fix:</strong> Inject simulated environment errors and self-correction recovery turns with CascadeGuard.
+            </div>
+          </div>
+        </div>
+
+        <!-- Diagnostics Issue List -->
+        <div class="issues-box" id="issues-box">
+          <h4>Detected Diagnostic Alerts</h4>
+          <div class="issues-list" id="diag-issues-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: Synthetic Augmentation -->
+      <section class="tab-panel" id="panel-augmentation">
+        <div class="panel-header">
+          <div>
+            <h2>Synthetic Anti-Overfitting Augmentation</h2>
+            <p class="section-desc">Generate robust trajectory variants that immunize models against the 3 whiteboard failure modes.</p>
+          </div>
+          <button class="btn-primary" id="btn-run-augment">Generate Augmented Variants</button>
+        </div>
+
+        <div class="augment-controls-bar">
+          <label class="checkbox-pill">
+            <input type="checkbox" id="chk-augment-syntax" checked>
+            <span>Parameter Casing & Ordering Perturbation (Syntax Invariance)</span>
+          </label>
+          <label class="checkbox-pill">
+            <input type="checkbox" id="chk-augment-obs" checked>
+            <span>Multi-Representation DOM ⇄ AXTree ⇄ Markdown Synthesis</span>
+          </label>
+          <label class="checkbox-pill">
+            <input type="checkbox" id="chk-augment-cascade" checked>
+            <span>CascadeGuard Error & Recovery Turn Injection</span>
+          </label>
+        </div>
+
+        <div class="variants-container" id="variants-container">
+          <div class="empty-state">Click "Generate Augmented Variants" to synthesize robust multi-harness trajectories.</div>
+        </div>
+      </section>
+
+      <!-- TAB 4: Multi-Harness Evaluation Matrix -->
+      <section class="tab-panel" id="panel-evals">
+        <div class="panel-header">
+          <div>
+            <h2>Multi-Harness Evaluation & Overfitting Audit</h2>
+            <p class="section-desc">Evaluate models on unseen harnesses to calculate the Harness Overfitting Coefficient (HOC).</p>
+          </div>
+          <div class="preset-controls">
+            <label for="eval-profile-select">Model Under Test:</label>
+            <select id="eval-profile-select">
+              <option value="overfitted_single_harness">Naive Model (Fine-tuned on 1 Harness only)</option>
+              <option value="polyharness_generalist">PolyHarness Model (Fine-tuned on ADP Mixture)</option>
+            </select>
+            <button class="btn-primary" id="btn-run-eval">Execute Multi-Harness Audit</button>
+          </div>
+        </div>
+
+        <!-- Eval Scorecard Hero -->
+        <div class="eval-hero-card" id="eval-hero-card">
+          <div class="eval-hero-main">
+            <div class="eval-metric-large">
+              <span class="metric-title">Harness Overfitting Coefficient (HOC)</span>
+              <div class="metric-value-huge" id="eval-hoc-val">0.625</div>
+              <span class="metric-note" id="eval-hoc-desc">High Degradation on Unseen Harnesses</span>
+            </div>
+            <div class="verdict-banner" id="eval-verdict-banner">
+              <span class="verdict-tag fail" id="eval-verdict-tag">FAILED AUDIT: HARNESS OVERFITTED</span>
+              <p id="eval-verdict-text">Model memorized 1 harness token pattern and collapses when deployed on unseen tool schemas.</p>
+            </div>
+          </div>
+
+          <div class="eval-stat-pills">
+            <div class="stat-pill">
+              <span class="stat-label">Native Accuracy</span>
+              <span class="stat-val" id="eval-native-acc">100.0%</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-label">Unseen Harnesses Avg</span>
+              <span class="stat-val" id="eval-unseen-acc">37.5%</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-label">Cross-Harness Transfer (CHTS)</span>
+              <span class="stat-val" id="eval-chts-val">0.375</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-label">Cascading Divergence Rate (CDR)</span>
+              <span class="stat-val" id="eval-cdr-val">0.333</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Harness Breakdown Table -->
+        <div class="table-container">
+          <table class="data-table" id="eval-breakdown-table">
+            <thead>
+              <tr>
+                <th>Harness Target</th>
+                <th>Evaluation Role</th>
+                <th>Task Completion Rate</th>
+                <th>Malformed Tool Calls</th>
+                <th>Observation Crashes</th>
+                <th>Cascading Failures</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="eval-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 5: SFT Dataset Compiler -->
+      <section class="tab-panel" id="panel-compiler">
+        <div class="panel-header">
+          <div>
+            <h2>SFT Dataset Compiler</h2>
+            <p class="section-desc">Compile canonical ADP trajectories into fine-tuning datasets for Hugging Face TRL, Axolotl, Unsloth, and OpenAI.</p>
+          </div>
+          <button class="btn-primary" id="btn-compile-dataset">Compile & Export</button>
+        </div>
+
+        <div class="compiler-settings-grid">
+          <div class="config-card">
+            <h3>Compilation Strategy</h3>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="compile-mode" value="mixture" checked id="radio-mode-mixture">
+                <div>
+                  <strong>Multi-Harness Mixture (Recommended)</strong>
+                  <p>Inoculates against harness overfitting by distributing trajectories across OpenAI, Hermes, Claude, and ReAct formats.</p>
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="compile-mode" value="single" id="radio-mode-single">
+                <div>
+                  <strong>Single Target Harness</strong>
+                  <p>Compile all trajectories into one specific framework schema.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="config-card">
+            <h3>Format & Target</h3>
+            <div class="form-group">
+              <label for="export-target-harness">Target Harness (if Single mode):</label>
+              <select id="export-target-harness">
+                <option value="openai">OpenAI (ChatML / GPT-4o)</option>
+                <option value="hermes">Nous-Hermes 2/3 (Llama/Mistral/Qwen SFT)</option>
+                <option value="anthropic">Anthropic Claude Tool Use</option>
+                <option value="react">Classic ReAct</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="export-format">Export Format:</label>
+              <select id="export-format">
+                <option value="jsonl">JSON Lines (.jsonl) for TRL / Axolotl / OpenAI</option>
+                <option value="json">Standard JSON (.json)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="compiler-preview-container">
+          <div class="col-header">
+            <span>Compiled Training Records Preview</span>
+            <button class="btn-action-sm" id="btn-download-sft">Download Dataset</button>
+          </div>
+          <pre id="compiler-preview-code"><code>Click "Compile & Export" to preview generated training records.</code></pre>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bottom-footer">
+      <div>
+        <span>PolyHarness v0.1.0</span> &bull; 
+        <span>Licensed under Apache 2.0</span> &bull; 
+        <span>Built for Production Agentic Fine-Tuning</span>
+      </div>
+      <div>
+        <span>Created by <strong>Shahriar Ahmed Seam</strong></span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -111,3 +111,17 @@ def test_langchain_adapter(sample_trajectory):
 
     parsed = adapter.parse(rendered)
     assert len(parsed.steps) > 0
+
+
+def test_smolagents_adapter(sample_trajectory):
+    adapter = get_adapter("smolagents")
+    rendered = adapter.render(sample_trajectory)
+
+    assert "turns" in rendered
+    assert len(rendered["turns"]) > 0
+    assert any("Action:" in t["content"] for t in rendered["turns"] if t["role"] == "assistant")
+
+    parsed = adapter.parse(rendered)
+    assert len(parsed.steps) > 0
+    assert parsed.environment.harness_id == "smolagents"
+

@@ -8,6 +8,7 @@ from polyharness.adapters.hermes import HermesAdapter
 from polyharness.adapters.langchain import LangChainAdapter
 from polyharness.adapters.openai import OpenAIAdapter
 from polyharness.adapters.react import ReActAdapter
+from polyharness.adapters.smolagents import SmolagentsAdapter
 
 ADAPTER_REGISTRY: dict[str, type[BaseAdapter]] = {
     "openai": OpenAIAdapter,
@@ -16,6 +17,7 @@ ADAPTER_REGISTRY: dict[str, type[BaseAdapter]] = {
     "react": ReActAdapter,
     "browsergym": BrowserGymAdapter,
     "langchain": LangChainAdapter,
+    "smolagents": SmolagentsAdapter,
 }
 
 
@@ -47,6 +49,7 @@ __all__ = [
     "LangChainAdapter",
     "OpenAIAdapter",
     "ReActAdapter",
+    "SmolagentsAdapter",
     "get_adapter",
     "list_adapters",
 ]

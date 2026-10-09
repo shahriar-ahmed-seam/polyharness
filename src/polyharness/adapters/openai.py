@@ -16,6 +16,7 @@ from polyharness.schema.adp import (
     Trajectory,
     TrajectoryMetadata,
 )
+from polyharness.schema.parsing import parse_resilient_json, reconcile_tool_call_ids
 
 
 class OpenAIAdapter(BaseAdapter):
@@ -60,6 +61,7 @@ class OpenAIAdapter(BaseAdapter):
 
         for step in trajectory.steps:
             if step.tool_calls:
+                reconcile_tool_call_ids(step.tool_calls, step.tool_results)
                 call_objects = []
                 for call in step.tool_calls:
                     call_objects.append(
@@ -68,7 +70,7 @@ class OpenAIAdapter(BaseAdapter):
                             "type": "function",
                             "function": {
                                 "name": call.name,
-                                "arguments": json.dumps(call.arguments),
+                                "arguments": json.dumps(call.arguments, ensure_ascii=False),
                             },
                         }
                     )
@@ -80,17 +82,35 @@ class OpenAIAdapter(BaseAdapter):
                 messages.append(assistant_msg)
 
                 for res in step.tool_results:
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": res.tool_call_id,
-                            "name": res.name,
-                            "content": res.content,
-                        }
-                    )
+                    tool_msg: dict[str, Any] = {
+                        "role": "tool",
+                        "tool_call_id": res.tool_call_id,
+                        "name": res.name,
+                        "content": res.content,
+                    }
+                    if res.image_base64:
+                        mime = res.mime_type or "image/png"
+                        tool_msg["content"] = [
+                            {"type": "text", "text": res.content},
+                            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{res.image_base64}"}},
+                        ]
+                    messages.append(tool_msg)
+            elif step.observation and (step.observation.screenshot_base64 or step.observation.image_url):
+                # Multimodal observation step
+                img_url = step.observation.image_url or f"data:{step.observation.mime_type or 'image/png'};base64,{step.observation.screenshot_base64}"
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": step.observation.raw_content},
+                            {"type": "image_url", "image_url": {"url": img_url}},
+                        ],
+                    }
+                )
             elif step.thought or step.action_intent:
                 content = step.thought or step.action_intent
                 messages.append({"role": "assistant", "content": content})
+
 
         if trajectory.outcome.get("final_answer"):
             messages.append(
@@ -153,14 +173,8 @@ class OpenAIAdapter(BaseAdapter):
                     tool_calls = []
                     for tc in tool_calls_raw:
                         fn = tc.get("function", {})
-                        args = fn.get("arguments", "{}")
-                        if isinstance(args, str):
-                            try:
-                                parsed_args = json.loads(args)
-                            except Exception:
-                                parsed_args = {"raw": args}
-                        else:
-                            parsed_args = args
+                        args = fn.get("arguments", {})
+                        parsed_args = parse_resilient_json(args)
                         tool_calls.append(
                             ToolCall(id=tc.get("id", f"call_{i}"), name=fn.get("name", ""), arguments=parsed_args)
                         )
@@ -170,15 +184,35 @@ class OpenAIAdapter(BaseAdapter):
                     j = i + 1
                     while j < len(messages) and messages[j].get("role") == "tool":
                         tr = messages[j]
+                        tr_content = tr.get("content", "")
+                        text_content = ""
+                        img_b64 = None
+                        mime = None
+                        if isinstance(tr_content, list):
+                            for block in tr_content:
+                                if isinstance(block, dict) and block.get("type") == "text":
+                                    text_content += block.get("text", "")
+                                elif isinstance(block, dict) and block.get("type") == "image_url":
+                                    url_val = block.get("image_url", {}).get("url", "")
+                                    if "base64," in url_val:
+                                        parts = url_val.split("base64,")
+                                        img_b64 = parts[1]
+                                        mime = parts[0].replace("data:", "").rstrip(";")
+                        else:
+                            text_content = str(tr_content)
+
                         tool_results.append(
                             ToolResult(
                                 tool_call_id=tr.get("tool_call_id", ""),
                                 name=tr.get("name", ""),
-                                content=tr.get("content", ""),
+                                content=text_content,
+                                image_base64=img_b64,
+                                mime_type=mime,
                             )
                         )
                         j += 1
 
+                    reconcile_tool_call_ids(tool_calls, tool_results)
                     steps.append(
                         Step(
                             step_index=step_idx,
@@ -190,6 +224,7 @@ class OpenAIAdapter(BaseAdapter):
                     step_idx += 1
                     i = j
                     continue
+
                 else:
                     if i == len(messages) - 1:
                         # Final answer turn

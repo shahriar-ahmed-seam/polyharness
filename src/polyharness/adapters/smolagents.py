@@ -16,6 +16,7 @@ from polyharness.schema.adp import (
     Trajectory,
     TrajectoryMetadata,
 )
+from polyharness.schema.parsing import parse_resilient_json, reconcile_tool_call_ids
 
 
 class SmolagentsAdapter(BaseAdapter):
@@ -107,13 +108,7 @@ class SmolagentsAdapter(BaseAdapter):
                         i += 1
                         continue
 
-                    args_dict = {}
-                    if args_raw:
-                        for part in args_raw.split(","):
-                            if "=" in part:
-                                k, v = part.split("=", 1)
-                                args_dict[k.strip()] = v.strip().strip("'\"")
-
+                    args_dict = parse_resilient_json(args_raw)
                     tool_calls.append(ToolCall(name=tool_name, arguments=args_dict))
 
                 tool_results: list[ToolResult] = []
@@ -127,6 +122,7 @@ class SmolagentsAdapter(BaseAdapter):
                     )
                     j += 1
 
+                reconcile_tool_call_ids(tool_calls, tool_results)
                 if thought or tool_calls:
                     steps.append(
                         Step(
@@ -139,6 +135,7 @@ class SmolagentsAdapter(BaseAdapter):
                     step_idx += 1
                 i = j
                 continue
+
             i += 1
 
         return Trajectory(

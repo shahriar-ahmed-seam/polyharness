@@ -17,6 +17,7 @@ from polyharness.schema.adp import (
     Trajectory,
     TrajectoryMetadata,
 )
+from polyharness.schema.parsing import parse_resilient_json, reconcile_tool_call_ids
 
 
 class HermesAdapter(BaseAdapter):
@@ -148,16 +149,17 @@ class HermesAdapter(BaseAdapter):
                     thought_clean = re.sub(r"<tool_call>.*?</tool_call>", "", content, flags=re.DOTALL).strip()
                     calls: list[ToolCall] = []
                     for match in tool_call_matches:
-                        try:
-                            parsed_c = json.loads(match.group(1).strip())
-                            calls.append(
-                                ToolCall(
-                                    name=parsed_c.get("name", ""),
-                                    arguments=parsed_c.get("arguments", {}),
-                                )
+                        raw_call = match.group(1).strip()
+                        parsed_c = parse_resilient_json(raw_call)
+                        call_name = parsed_c.get("name", "")
+                        raw_args = parsed_c.get("arguments", {})
+                        parsed_args = parse_resilient_json(raw_args) if isinstance(raw_args, str) else raw_args
+                        calls.append(
+                            ToolCall(
+                                name=call_name or "unknown_tool",
+                                arguments=parsed_args if isinstance(parsed_args, dict) else {"raw": parsed_args},
                             )
-                        except Exception:
-                            pass
+                        )
 
                     # Fetch following tool results
                     tool_results: list[ToolResult] = []
@@ -166,21 +168,23 @@ class HermesAdapter(BaseAdapter):
                         t_msg = messages[j].get("content", "")
                         resp_match = re.search(r"<tool_response>(.*?)</tool_response>", t_msg, re.DOTALL)
                         if resp_match:
-                            try:
-                                parsed_r = json.loads(resp_match.group(1).strip())
-                                tool_results.append(
-                                    ToolResult(
-                                        tool_call_id="",
-                                        name=parsed_r.get("name", ""),
-                                        content=str(parsed_r.get("content", "")),
-                                    )
+                            parsed_r = parse_resilient_json(resp_match.group(1).strip())
+                            res_content = parsed_r.get("content", "")
+                            res_name = parsed_r.get("name", "")
+                            tool_results.append(
+                                ToolResult(
+                                    tool_call_id="",
+                                    name=res_name,
+                                    content=str(res_content) if res_content else resp_match.group(1).strip(),
                                 )
-                            except Exception:
-                                tool_results.append(
-                                    ToolResult(tool_call_id="", name="", content=t_msg)
-                                )
+                            )
+                        else:
+                            tool_results.append(
+                                ToolResult(tool_call_id="", name="", content=t_msg)
+                            )
                         j += 1
 
+                    reconcile_tool_call_ids(calls, tool_results)
                     steps.append(
                         Step(
                             step_index=step_idx,
@@ -192,6 +196,7 @@ class HermesAdapter(BaseAdapter):
                     step_idx += 1
                     i = j
                     continue
+
                 else:
                     if i < len(messages) - 1:
                         steps.append(Step(step_index=step_idx, thought=content))

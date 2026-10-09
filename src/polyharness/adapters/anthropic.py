@@ -15,6 +15,7 @@ from polyharness.schema.adp import (
     Trajectory,
     TrajectoryMetadata,
 )
+from polyharness.schema.parsing import parse_resilient_json, reconcile_tool_call_ids
 
 
 class AnthropicAdapter(BaseAdapter):
@@ -51,6 +52,7 @@ class AnthropicAdapter(BaseAdapter):
 
         for step in trajectory.steps:
             if step.tool_calls:
+                reconcile_tool_call_ids(step.tool_calls, step.tool_results)
                 assistant_content: list[dict[str, Any]] = []
                 if step.thought:
                     assistant_content.append({"type": "text", "text": step.thought})
@@ -70,18 +72,30 @@ class AnthropicAdapter(BaseAdapter):
                 if step.tool_results:
                     user_content: list[dict[str, Any]] = []
                     for res in step.tool_results:
-                        user_content.append(
-                            {
-                                "type": "tool_result",
-                                "tool_use_id": res.tool_call_id,
-                                "content": res.content,
-                                "is_error": res.is_error,
-                            }
-                        )
+                        res_block: dict[str, Any] = {
+                            "type": "tool_result",
+                            "tool_use_id": res.tool_call_id,
+                            "content": res.content,
+                            "is_error": res.is_error,
+                        }
+                        if res.image_base64:
+                            res_block["content"] = [
+                                {"type": "text", "text": res.content},
+                                {
+                                    "type": "image",
+                                    "source": {
+                                        "type": "base64",
+                                        "media_type": res.mime_type or "image/png",
+                                        "data": res.image_base64,
+                                    },
+                                },
+                            ]
+                        user_content.append(res_block)
                     messages.append({"role": "user", "content": user_content})
             elif step.thought or step.action_intent:
                 text = step.thought or step.action_intent
                 messages.append({"role": "assistant", "content": text})
+
 
         if trajectory.outcome.get("final_answer"):
             messages.append(
@@ -141,11 +155,13 @@ class AnthropicAdapter(BaseAdapter):
                     if block.get("type") == "text":
                         thought_str += block.get("text", "")
                     elif block.get("type") == "tool_use":
+                        inp = block.get("input", {})
+                        parsed_inp = parse_resilient_json(inp) if isinstance(inp, str) else inp
                         tool_calls.append(
                             ToolCall(
                                 id=block.get("id", f"call_{i}"),
                                 name=block.get("name", ""),
-                                arguments=block.get("input", {}),
+                                arguments=parsed_inp if isinstance(parsed_inp, dict) else {"raw": parsed_inp},
                             )
                         )
 
@@ -154,16 +170,34 @@ class AnthropicAdapter(BaseAdapter):
                 if j < len(messages) and messages[j].get("role") == "user" and isinstance(messages[j].get("content"), list):
                     for res_block in messages[j].get("content", []):
                         if res_block.get("type") == "tool_result":
+                            blk_content = res_block.get("content", "")
+                            text_body = ""
+                            img_b64 = None
+                            mime = None
+                            if isinstance(blk_content, list):
+                                for item in blk_content:
+                                    if isinstance(item, dict) and item.get("type") == "text":
+                                        text_body += item.get("text", "")
+                                    elif isinstance(item, dict) and item.get("type") == "image":
+                                        src = item.get("source", {})
+                                        img_b64 = src.get("data")
+                                        mime = src.get("media_type")
+                            else:
+                                text_body = str(blk_content)
+
                             tool_results.append(
                                 ToolResult(
                                     tool_call_id=res_block.get("tool_use_id", ""),
                                     name="",
-                                    content=str(res_block.get("content", "")),
+                                    content=text_body,
                                     is_error=res_block.get("is_error", False),
+                                    image_base64=img_b64,
+                                    mime_type=mime,
                                 )
                             )
                     j += 1
 
+                reconcile_tool_call_ids(tool_calls, tool_results)
                 steps.append(
                     Step(
                         step_index=step_idx,
@@ -175,6 +209,7 @@ class AnthropicAdapter(BaseAdapter):
                 step_idx += 1
                 i = j
                 continue
+
             i += 1
 
         final_answer = ""

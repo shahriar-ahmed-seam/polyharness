@@ -21,6 +21,7 @@ class ObservationType(str, Enum):
     ACCESSIBILITY_TREE = "accessibility_tree"
     JSON = "json"
     MULTI_REPRESENTATION = "multi_representation"
+    MULTIMODAL_IMAGE = "multimodal_image"
 
 
 class ToolParameter(BaseModel):
@@ -60,6 +61,8 @@ class ToolResult(BaseModel):
     name: str = Field(..., description="Canonical tool identifier invoked")
     content: str = Field(..., description="Observation payload returned by tool execution")
     is_error: bool = Field(default=False, description="True if execution threw an exception")
+    image_base64: str | None = Field(default=None, description="Raw base64-encoded screenshot or diagram")
+    mime_type: str | None = Field(default=None, description="MIME type e.g. image/png, image/jpeg")
 
 
 class Observation(BaseModel):
@@ -75,7 +78,17 @@ class Observation(BaseModel):
     structured_state: dict[str, Any] | None = Field(
         default=None, description="JSON state representation"
     )
+    screenshot_base64: str | None = Field(
+        default=None, description="Base64-encoded screenshot for multimodal vision agents"
+    )
+    image_url: str | None = Field(
+        default=None, description="Remote image URI or local asset path"
+    )
+    mime_type: str | None = Field(
+        default=None, description="Image MIME type e.g. image/png"
+    )
     metadata: dict[str, Any] = Field(default_factory=dict)
+
 
 
 class Step(BaseModel):

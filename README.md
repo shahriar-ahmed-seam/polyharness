@@ -97,13 +97,15 @@ flowchart TD
 ## ⚡ Key Features
 
 - **Agent Data Protocol (ADP v1.0)**: Strict, open-standard Pydantic V2 specification decoupling task goals, environment specifications, tool schemas, and observations from framework quirks.
-- **6 Production Harness Adapters**:
+- **7 Production Harness Adapters**:
   - `openai`: ChatML and standard JSON function calling (`tools` array).
   - `anthropic`: Claude 3.5/3.7 content blocks (`tool_use` and `tool_result`).
   - `hermes`: Nous-Hermes 2/3 XML format (`<tools>`, `<tool_call>`, `<tool_response>`).
   - `react`: Classic ReAct reasoning loop (`Thought:` / `Action:` / `Observation:`).
   - `browsergym`: Web agent action space (`click`, `fill`, `scroll`) and accessibility trees.
   - `langchain`: AgentExecutor trace export and intermediate steps.
+  - `smolagents`: HuggingFace CodeAgent & ToolCallingAgent Pythonic syntax.
+
 - **Anti-Overfitting Synthesis Engine**:
   - **`SyntaxPerturber`**: Inoculates models against tool schema fragility.
   - **`ObservationTransformer`**: Decouples models from DOM lock-in with HTML ⇄ AXTree ⇄ Markdown converters.
@@ -313,8 +315,10 @@ Harness/
 │       │   ├── app.py           # FastAPI application
 │       │   ├── routes.py        # REST API endpoints
 │       │   └── static/          # Embedded Web Studio assets (HTML, CSS, JS)
-│       └── cli/                 # Developer CLI
-│           └── main.py          # CLI commands
+├── docs/
+│   ├── ARCHITECTURE.md          # Formal system architecture blueprint
+│   ├── SPECIFICATION.md         # Agent Data Protocol (ADP v1.0) specification
+│   └── BENCHMARKS.md            # Multi-harness evaluation metrics & methodology
 ├── examples/
 │   ├── trajectories/            # Standard ADP trajectory samples
 │   ├── compile_multi_harness.py # SFT compilation script
@@ -334,7 +338,16 @@ Harness/
 
 ---
 
+## 📚 Technical Documentation
+
+- **[System Architecture Blueprint](docs/ARCHITECTURE.md)**: Deep dive into the canonical interlingua pipeline, AST DOM compaction, and streaming compilation mechanics.
+- **[Agent Data Protocol (ADP v1.0) Specification](docs/SPECIFICATION.md)**: Formal RFC specification defining schemas, invariants, step indexing, and multimodal observation formats.
+- **[Multi-Harness Evaluation & Benchmarks](docs/BENCHMARKS.md)**: Mathematical formulations of HOC, CHTS, CDR metrics and 95% bootstrap confidence bounds.
+
+---
+
 ## 📜 Citation
+
 
 If you use **PolyHarness** in your research or production agent pipelines, please cite:
 
